@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dante's Inferno: Interactive Map & Reader</title>
+  <title>Dante's Inferno: Interactive Map &amp; Reader</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -19,7 +19,7 @@
       padding: 0;
     }
 
-    body {
+    html, body {
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-color);
       color: var(--text-dark);
@@ -32,18 +32,20 @@
       display: flex;
       width: 100%;
       min-height: 100vh;
-      transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      align-items: stretch;
+      transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     /* Left / Center Map Panel */
     .map-panel {
       width: 100%;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 2rem 1rem;
-      transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1), padding 0.6s ease;
+      transition: width 0.45s cubic-bezier(0.25, 1, 0.5, 1), padding 0.45s ease, background-color 0.45s ease;
     }
 
     .app-container.split-active .map-panel {
@@ -51,9 +53,12 @@
       position: sticky;
       top: 0;
       height: 100vh;
-      border-right: 1px solid rgba(0, 0, 0, 0.1);
+      min-height: 100vh;
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
       background-color: #ebe6dc;
       overflow-y: auto;
+      justify-content: flex-start;
+      padding-top: 2.25rem;
     }
 
     .map-title {
@@ -81,7 +86,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       position: relative;
     }
 
@@ -92,7 +97,7 @@
       font-weight: 700;
       font-size: 0.95rem;
       letter-spacing: 0.08em;
-      padding: 8px 20px;
+      padding: 9px 22px;
       border: 2px solid #8d99ae;
       border-radius: 6px;
       cursor: pointer;
@@ -110,9 +115,13 @@
       box-shadow: 0 6px 18px rgba(158, 42, 43, 0.35);
     }
 
-    .gate-visual {
-      font-size: 1.8rem;
-      margin-top: 4px;
+    .gate-inscription {
+      font-family: 'Crimson Text', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: #4a4e69;
+      margin-top: 6px;
+      letter-spacing: 0.02em;
       user-select: none;
     }
 
@@ -148,7 +157,7 @@
       z-index: 3;
     }
 
-    /* Tier Colors & Decreasing Widths matching your infographic */
+    /* Tier Colors & Decreasing Widths */
     .t-1 { width: 100%; background: linear-gradient(90deg, #5c8db8, #6ea0cb, #5c8db8); }
     .t-2 { width: 93%;  background: linear-gradient(90deg, #6b3e75, #834e8f, #6b3e75); }
     .t-3 { width: 86%;  background: linear-gradient(90deg, #d97a2b, #e88d3f, #d97a2b); }
@@ -157,9 +166,9 @@
     .t-6 { width: 65%;  background: linear-gradient(90deg, #c44921, #d9592e, #c44921); }
     .t-7 { width: 58%;  background: linear-gradient(90deg, #8c2323, #a62c2c, #8c2323); }
     .t-8 { width: 51%;  background: linear-gradient(90deg, #592652, #703268, #592652); }
-    .t-9 { 
-      width: 44%; 
-      background: linear-gradient(180deg, #2a628f, #183a59); 
+    .t-9 {
+      width: 44%;
+      background: linear-gradient(180deg, #2a628f, #183a59);
       padding: 18px 12px 26px;
       border-bottom-left-radius: 50% 35%;
       border-bottom-right-radius: 50% 35%;
@@ -168,29 +177,35 @@
       gap: 4px;
     }
 
-    /* Right Reader Panel */
+    /* Right Reader Panel (Collapsed cleanly by default) */
     .reader-panel {
       width: 0;
+      height: 0;
+      min-height: 0;
       opacity: 0;
       overflow: hidden;
+      padding: 0;
       background-color: var(--paper-bg);
-      transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+      transition: width 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.35s ease;
       display: flex;
       flex-direction: column;
+      pointer-events: none;
     }
 
     .app-container.split-active .reader-panel {
       width: 55%;
+      height: 100vh;
+      min-height: 100vh;
       opacity: 1;
       overflow-y: auto;
-      height: 100vh;
+      pointer-events: auto;
     }
 
     /* Reader Header & Canto Tabs */
     .reader-header {
       position: sticky;
       top: 0;
-      background: rgba(255, 253, 249, 0.95);
+      background: rgba(255, 253, 249, 0.96);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid #e2dcd0;
       padding: 1.25rem 2rem;
@@ -201,29 +216,33 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 1rem;
       margin-bottom: 1rem;
     }
 
     .region-heading {
       font-family: 'Cinzel', serif;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       color: var(--accent-red);
     }
 
     .close-btn {
-      background: transparent;
-      border: 1px solid #ccc;
-      padding: 6px 12px;
+      background: #f7f3eb;
+      border: 1px solid #c9bfae;
+      padding: 7px 14px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.85rem;
-      color: #555;
+      font-weight: 500;
+      color: #333;
+      white-space: nowrap;
       transition: all 0.2s;
     }
 
     .close-btn:hover {
-      background: #eee;
+      background: #e8e1d3;
       color: #111;
+      border-color: #9e2a2b;
     }
 
     /* Canto Navigation Tabs */
@@ -242,6 +261,7 @@
       font-weight: 600;
       font-size: 0.9rem;
       cursor: pointer;
+      color: #2b2d42;
       transition: all 0.2s;
     }
 
@@ -323,11 +343,22 @@
       .app-container.split-active {
         flex-direction: column;
       }
-      .app-container.split-active .map-panel,
+
+      .app-container.split-active .map-panel {
+        width: 100%;
+        height: auto;
+        min-height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        padding-top: 1.5rem;
+      }
+
       .app-container.split-active .reader-panel {
         width: 100%;
         height: auto;
-        position: static;
+        min-height: 75vh;
+        overflow-y: visible;
       }
     }
   </style>
@@ -336,28 +367,28 @@
 
 <div class="app-container" id="app">
   <!-- LEFT / CENTER: INFERNO MAP -->
-  <div class="map-panel">
-    <h1 class="map-title">DANTE’S INFERNO: 9 CIRCLES OF HELL</h1>
+  <div class="map-panel" id="mapPanel">
+    <h1 class="map-title">DANTE&rsquo;S INFERNO: 9 CIRCLES OF HELL</h1>
 
     <div class="inferno-diagram">
       <!-- Gate of Hell Button -->
       <div class="gate-section">
-        <button class="gate-btn" id="btn-gate" onclick="openRegion('gate')">
-          <span>🏛️ GATE OF HELL</span>
+        <button class="gate-btn" id="btn-gate" type="button" onclick="openRegion('gate')">
+          <span>GATE OF HELL</span>
         </button>
-        <div class="gate-visual">🚶‍♂️🧙‍♂️ ⛩️</div>
+        <div class="gate-inscription">Abandon all hope, ye who enter here</div>
       </div>
 
       <!-- 9 Circles -->
-      <button class="tier-btn t-1" id="btn-limbo" onclick="openRegion('limbo')">1. LIMBO</button>
-      <button class="tier-btn t-2" id="btn-lust" onclick="openRegion('lust')">2. LUST</button>
-      <button class="tier-btn t-3" id="btn-gluttony" onclick="openRegion('gluttony')">3. GLUTTONY</button>
-      <button class="tier-btn t-4" id="btn-greed" onclick="openRegion('greed')">4. GREED</button>
-      <button class="tier-btn t-5" id="btn-anger" onclick="openRegion('anger')">5. ANGER</button>
-      <button class="tier-btn t-6" id="btn-heresy" onclick="openRegion('heresy')">6. HERESY</button>
-      <button class="tier-btn t-7" id="btn-violence" onclick="openRegion('violence')">7. VIOLENCE</button>
-      <button class="tier-btn t-8" id="btn-fraud" onclick="openRegion('fraud')">8. FRAUD</button>
-      <button class="tier-btn t-9" id="btn-treachery" onclick="openRegion('treachery')">
+      <button class="tier-btn t-1" id="btn-limbo" type="button" onclick="openRegion('limbo')">1. LIMBO</button>
+      <button class="tier-btn t-2" id="btn-lust" type="button" onclick="openRegion('lust')">2. LUST</button>
+      <button class="tier-btn t-3" id="btn-gluttony" type="button" onclick="openRegion('gluttony')">3. GLUTTONY</button>
+      <button class="tier-btn t-4" id="btn-greed" type="button" onclick="openRegion('greed')">4. GREED</button>
+      <button class="tier-btn t-5" id="btn-anger" type="button" onclick="openRegion('anger')">5. ANGER</button>
+      <button class="tier-btn t-6" id="btn-heresy" type="button" onclick="openRegion('heresy')">6. HERESY</button>
+      <button class="tier-btn t-7" id="btn-violence" type="button" onclick="openRegion('violence')">7. VIOLENCE</button>
+      <button class="tier-btn t-8" id="btn-fraud" type="button" onclick="openRegion('fraud')">8. FRAUD</button>
+      <button class="tier-btn t-9" id="btn-treachery" type="button" onclick="openRegion('treachery')">
         <span>9. TREACHERY</span>
         <span style="font-size: 0.75rem; opacity: 0.85;">SATAN</span>
       </button>
@@ -369,7 +400,7 @@
     <div class="reader-header">
       <div class="header-top">
         <h2 class="region-heading" id="regionHeading">Gate of Hell</h2>
-        <button class="close-btn" onclick="closeReader()">✕ Đóng / Quay lại toàn cảnh</button>
+        <button class="close-btn" type="button" onclick="closeReader()">Back to Overview</button>
       </div>
       <div class="canto-tabs" id="cantoTabs"></div>
     </div>
@@ -381,51 +412,51 @@
 <script>
   // Canto I Full Text Data (Separated into Tercets / Stanzas)
   const canto1Stanzas = [
-    "When I had journeyed half of our life’s way,\nI found myself within a shadowed forest,\nfor I had lost the path that does not stray.",
+    "When I had journeyed half of our life\u2019s way,\nI found myself within a shadowed forest,\nfor I had lost the path that does not stray.",
     "Ah, it is hard to speak of what it was,\nthat savage forest, dense and difficult,\nwhich even in recall renews my fear:",
-    "so bitter — death is hardly more severe!\nBut to retell the good discovered there,\nI’ll also tell the other things I saw.",
+    "so bitter \u2014 death is hardly more severe!\nBut to retell the good discovered there,\nI\u2019ll also tell the other things I saw.",
     "I cannot clearly say how I had entered\nthe wood; I was so full of sleep just at\nthe point where I abandoned the true path.",
-    "But when I’d reached the bottom of a hill —\nit rose along the boundary of the valley\nthat had harassed my heart with so much fear —",
+    "But when I\u2019d reached the bottom of a hill \u2014\nit rose along the boundary of the valley\nthat had harassed my heart with so much fear \u2014",
     "I looked on high and saw its shoulders clothed\nalready by the rays of that same planet\nwhich serves to lead men straight along all roads.",
     "At this my fear was somewhat quieted;\nfor through the night of sorrow I had spent,\nthe lake within my heart felt terror present.",
     "And just as he who, with exhausted breath,\nhaving escaped from sea to shore, turns back\nto watch the dangerous waters he has quit,",
     "so did my spirit, still a fugitive,\nturn back to look intently at the pass\nthat never has let any man survive.",
-    "I let my tired body rest awhile.\nMoving again, I tried the lonely slope —\nmy firm foot always was the one below.",
-    "And almost where the hillside starts to rise —\nlook there! — a leopard, very quick and lithe,\na leopard covered with a spotted hide.",
+    "I let my tired body rest awhile.\nMoving again, I tried the lonely slope \u2014\nmy firm foot always was the one below.",
+    "And almost where the hillside starts to rise \u2014\nlook there! \u2014 a leopard, very quick and lithe,\na leopard covered with a spotted hide.",
     "He did not disappear from sight, but stayed;\nindeed, he so impeded my ascent\nthat I had often to turn back again.",
     "The time was the beginning of the morning;\nthe sun was rising now in fellowship\nwith the same stars that had escorted it",
     "when Divine Love first moved those things of beauty;\nso that the hour and the gentle season\ngave me good cause for hopefulness on seeing",
     "that beast before me with his speckled skin;\nbut hope was hardly able to prevent\nthe fear I felt when I beheld a lion.",
-    "His head held high and ravenous with hunger —\neven the air around him seemed to shudder —\nthis lion seemed to make his way against me.",
+    "His head held high and ravenous with hunger \u2014\neven the air around him seemed to shudder \u2014\nthis lion seemed to make his way against me.",
     "And then a she-wolf showed herself; she seemed\nto carry every craving in her leanness;\nshe had already brought despair to many.",
     "The very sight of her so weighted me\nwith fearfulness that I abandoned hope\nof ever climbing up that mountain slope.",
     "Even as he who glories while he gains\nwill, when the time has come to tally loss,\nlament with every thought and turn despondent,",
     "so was I when I faced that restless beast\nwhich, even as she stalked me, step by step\nhad thrust me back to where the sun is speechless.",
     "While I retreated down to lower ground,\nbefore my eyes there suddenly appeared\none who seemed faint because of the long silence.",
-    "When I saw him in that vast wilderness,\n“Have pity on me,” were the words I cried,\n“whatever you may be — a shade, a man.”",
-    "He answered me: “Not man; I once was man.\nBoth of my parents came from Lombardy,\nand both claimed Mantua as native city.",
-    "And I was born, though late, sub Julio,\nand lived in Rome under the good Augustus —\nthe season of the false and lying gods.",
+    "When I saw him in that vast wilderness,\n\u201cHave pity on me,\u201d were the words I cried,\n\u201cwhatever you may be \u2014 a shade, a man.\u201d",
+    "He answered me: \u201cNot man; I once was man.\nBoth of my parents came from Lombardy,\nand both claimed Mantua as native city.",
+    "And I was born, though late, sub Julio,\nand lived in Rome under the good Augustus \u2014\nthe season of the false and lying gods.",
     "I was a poet, and I sang the righteous\nson of Anchises who had come from Troy\nwhen flames destroyed the pride of Ilium.",
-    "But why do you return to wretchedness?\nWhy not climb up the mountain of delight,\nthe origin and cause of every joy?”",
-    "“And are you then that Virgil, you the fountain\nthat freely pours so rich a stream of speech?”\nI answered him with shame upon my brow.",
-    "“O light and honor of all other poets,\nmay my long study and the intense love\nthat made me search your volume serve me now.",
-    "You are my master and my author, you —\nthe only one from whom my writing drew\nthe noble style for which I have been honored.",
-    "You see the beast that made me turn aside;\nhelp me, o famous sage, to stand against her,\nfor she has made my blood and pulses shudder,”",
-    "“It is another path that you must take,”\nhe answered when he saw my tearfulness,\n“if you would leave this savage wilderness;",
+    "But why do you return to wretchedness?\nWhy not climb up the mountain of delight,\nthe origin and cause of every joy?\u201d",
+    "\u201cAnd are you then that Virgil, you the fountain\nthat freely pours so rich a stream of speech?\u201d\nI answered him with shame upon my brow.",
+    "\u201cO light and honor of all other poets,\nmay my long study and the intense love\nthat made me search your volume serve me now.",
+    "You are my master and my author, you \u2014\nthe only one from whom my writing drew\nthe noble style for which I have been honored.",
+    "You see the beast that made me turn aside;\nhelp me, o famous sage, to stand against her,\nfor she has made my blood and pulses shudder,\u201d",
+    "\u201cIt is another path that you must take,\u201d\nhe answered when he saw my tearfulness,\n\u201cif you would leave this savage wilderness;",
     "the beast that is the cause of your outcry\nallows no man to pass along her track,\nbut blocks him even to the point of death;",
-    "her nature is so squalid, so malicious\nthat she can never sate her greedy will;\nwhen she has fed, she’s hungrier than ever.",
+    "her nature is so squalid, so malicious\nthat she can never sate her greedy will;\nwhen she has fed, she\u2019s hungrier than ever.",
     "She mates with many living souls and shall\nyet mate with many more, until the Greyhound\narrives, inflicting painful death on her.",
     "That Hound will never feed on land or pewter,\nbut find his fare in wisdom, love, and virtue;\nhis place of birth shall be between two felts.",
     "He will restore low-lying Italy for which\nthe maid Camilla died of wounds,\nand Nisus, Turnus, and Euryalus.",
     "And he will hunt that beast through every city\nuntil he thrusts her back again to Hell,\nfor which she was first sent above by envy.",
     "Therefore, I think and judge it best for you\nto follow me, and I shall guide you, taking\nyou from this place through an eternal place,",
     "where you shall hear the howls of desperation\nand see the ancient spirits in their pain,\nas each of them laments his second death;",
-    "and you shall see those souls who are content\nwithin the fire, for they hope to reach —\nwhenever that may be — the blessed people.",
-    "If you would then ascend as high as these,\na soul more worthy than I am will guide you;\nI’ll leave you in her care when I depart,",
+    "and you shall see those souls who are content\nwithin the fire, for they hope to reach \u2014\nwhenever that may be \u2014 the blessed people.",
+    "If you would then ascend as high as these,\na soul more worthy than I am will guide you;\nI\u2019ll leave you in her care when I depart,",
     "because that Emperor who reigns above,\nsince I have been rebellious to His law,\nwill not allow me entry to His city.",
-    "He governs everywhere, but rules from there;\nthere is His city, His high capital:\no happy those He chooses to be there!”",
-    "And I replied: “O poet — by that God\nwhom you had never come to know — I beg you,\nthat I may flee this evil and worse evils,",
-    "to lead me to the place of which you spoke,\nthat I may see the gateway of Saint Peter\nand those whom you describe as sorrowful.”",
+    "He governs everywhere, but rules from there;\nthere is His city, His high capital:\no happy those He chooses to be there!\u201d",
+    "And I replied: \u201cO poet \u2014 by that God\nwhom you had never come to know \u2014 I beg you,\nthat I may flee this evil and worse evils,",
+    "to lead me to the place of which you spoke,\nthat I may see the gateway of Saint Peter\nand those whom you describe as sorrowful.\u201d",
     "Then he set out, and I moved on behind him."
   ];
 
@@ -459,7 +490,6 @@
     const app = document.getElementById('app');
     app.classList.add('split-active');
 
-    // Highlight active button on map
     document.querySelectorAll('.gate-btn, .tier-btn').forEach(btn => btn.classList.remove('active'));
     const activeBtn = document.getElementById('btn-' + regionKey);
     if (activeBtn) activeBtn.classList.add('active');
@@ -467,12 +497,12 @@
     const region = regions[regionKey];
     document.getElementById('regionHeading').textContent = region.title;
 
-    // Render Canto Tabs
     const tabsContainer = document.getElementById('cantoTabs');
     tabsContainer.innerHTML = '';
 
     region.cantos.forEach((canto, idx) => {
       const tab = document.createElement('button');
+      tab.type = 'button';
       tab.className = 'canto-tab' + (idx === 0 ? ' active' : '');
       tab.textContent = canto.label;
       tab.onclick = () => {
@@ -483,13 +513,14 @@
       tabsContainer.appendChild(tab);
     });
 
-    // Render first canto by default
     renderCanto(region.cantos[0]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function renderCanto(canto) {
     const container = document.getElementById('poemContainer');
-    document.getElementById('readerPanel').scrollTop = 0;
+    const readerPanel = document.getElementById('readerPanel');
+    readerPanel.scrollTop = 0;
 
     let html = `
       <h3 class="canto-title">${canto.label}</h3>
@@ -509,8 +540,8 @@
     } else {
       html += `
         <div class="placeholder-box">
-          <p><strong>${canto.label}</strong> đang được cập nhật nội dung bản dịch và chú thích.</p>
-          <p style="margin-top: 8px; font-size: 1rem;">Hãy thử bấm vào <strong>Gate of Hell → Canto I</strong> để xem bản demo hoàn chỉnh!</p>
+          <p><strong>${canto.label}</strong> translation and notes are being prepared.</p>
+          <p style="margin-top: 8px; font-size: 1rem;">Select <strong>Gate of Hell &rarr; Canto I</strong> to read the full sample text.</p>
         </div>
       `;
     }
@@ -519,8 +550,18 @@
   }
 
   function closeReader() {
-    document.getElementById('app').classList.remove('split-active');
+    const app = document.getElementById('app');
+    const readerPanel = document.getElementById('readerPanel');
+    const mapPanel = document.getElementById('mapPanel');
+
+    app.classList.remove('split-active');
     document.querySelectorAll('.gate-btn, .tier-btn').forEach(btn => btn.classList.remove('active'));
+
+    readerPanel.scrollTop = 0;
+    if (mapPanel) mapPanel.scrollTop = 0;
+    document.getElementById('poemContainer').innerHTML = '';
+    document.getElementById('cantoTabs').innerHTML = '';
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }
 </script>
 
